@@ -25,7 +25,7 @@ if (!global.hasOwnProperty('db')) {
         sequelize = new Sequelize("ticket", "postgres", "postgres",
             {
                 dialect: "postgres",
-                port: 5433
+                port: 5432
             });
     }
 

@@ -7,13 +7,23 @@ const router = express.Router();
 const log = require('../log')(module);
 
 router.post('/user', function (req, res) {
-    models.User.create({
-        group_id: req.body.group_id,
-        social_id: req.body.social_id,
-        email: req.body.email,
-        name: req.body.name
+    models.User.findOne({
+        where: {
+            social_id: req.body.social_id
+        }
     }).then(function (user) {
-        res.send(user)
+        if (!user) {
+            models.User.create({
+                group_id: req.body.group_id,
+                social_id: req.body.social_id,
+                email: req.body.email,
+                name: req.body.name
+            }).then(function (newUser) {
+                res.send(newUser)
+            });
+        } else {
+            res.send(user)
+        }
     });
 });
 

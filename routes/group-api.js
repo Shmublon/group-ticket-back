@@ -46,6 +46,22 @@ router.get('/groups', function (req, res) {
     });
 });
 
+router.get('/groups/:train_id', function (req, res) {
+    models.Group.findAll(
+        {
+            where: {
+                train_id: req.params.train_id,
+            },
+            include: [
+                models.User,
+                {model: models.User, as: 'creator'}
+            ]
+        }
+    ).then(function (groups) {
+        return res.send(groups);
+    });
+});
+
 router.get('/group/:id', function (req, res) {
     models.Group.findById(req.params.id,
         {

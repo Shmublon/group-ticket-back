@@ -96,7 +96,7 @@ router.put('/group/:id', function (req, res) {
     });
 });
 
-router.delete('/groups/:id', function (req, res) {
+router.delete('/group/:id', function (req, res) {
     models.Group.findById(req.params.id).then(function (group) {
         if (!group) {
             res.statusCode = 404;

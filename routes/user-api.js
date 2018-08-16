@@ -77,7 +77,7 @@ router.put('/user/:id', function (req, res) {
     });
 });
 
-router.delete('/users/:id', function (req, res) {
+router.delete('/user/:id', function (req, res) {
     models.User.findById(req.params.id).then(function (user) {
         if (!user) {
             res.statusCode = 404;

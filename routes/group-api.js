@@ -10,31 +10,8 @@ const log = require('../log')(module);
 router.post('/group', function (req, res) {
     models.Group.create({
         train_id: req.body.train_id,
-        creator_id: req.body.creator_id,
     }).then(function (group) {
-        models.User.findById(group.creator_id).then(function (user) {
-            if (!user) {
-                res.statusCode = 404;
-                return res.send({error: 'Not found'});
-            }
-
-            return user.update({
-                group_id: group.id,
-            }).then(function (user) {
-                models.Group.findById(user.id, {
-                    include: [
-                        models.User,
-                        {model: models.User, as: 'creator'}
-                    ]
-                }).then(function (group) {
-                    if (!group) {
-                        res.statusCode = 404;
-                        return res.send({error: 'Not found'});
-                    }
-                    return res.send(group);
-                });
-            });
-        });
+        return res.send(group);
     });
 });
 
@@ -43,7 +20,6 @@ router.get('/groups', function (req, res) {
         {
             include: [
                 models.User,
-                {model: models.User, as: 'creator'}
             ]
         }
     ).then(function (groups) {
@@ -59,7 +35,6 @@ router.get('/groups/:train_id', function (req, res) {
             },
             include: [
                 models.User,
-                {model: models.User, as: 'creator'}
             ]
         }
     ).then(function (groups) {
@@ -72,7 +47,6 @@ router.get('/group/:id', function (req, res) {
         {
             include: [
                 models.User,
-                {model: models.User, as: 'creator'}
             ]
         }
     ).then(function (group) {
@@ -94,9 +68,8 @@ router.put('/group/:id', function (req, res) {
 
         return group.update({
             train_id: req.body.train_id,
-            creator_id: req.body.creator_id,
         }).then(function (group) {
-            res.send({status: 'UPDATED', Group: group})
+            res.send(group)
         });
     });
 });

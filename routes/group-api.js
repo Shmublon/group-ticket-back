@@ -21,7 +21,12 @@ router.post('/group', function (req, res) {
             return user.update({
                 group_id: group.id,
             }).then(function (user) {
-                models.Group.findById(user.id, {include: [models.User]}).then(function (group) {
+                models.Group.findById(user.id, {
+                    include: [
+                        models.User,
+                        {model: models.User, as: 'creator'}
+                    ]
+                }).then(function (group) {
                     if (!group) {
                         res.statusCode = 404;
                         return res.send({error: 'Not found'});

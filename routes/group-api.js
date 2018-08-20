@@ -6,11 +6,23 @@ const models = require('../models');
 const express = require('express');
 const router = express.Router();
 const log = require('../log')(module);
+const Pusher = require('pusher');
+
+const pusher = new Pusher({
+    appId: '581177',
+    key: '0f2d6daa9a3769af1220',
+    secret: 'e02779df7567982bb1a8',
+    cluster: 'eu',
+    encrypted: true
+});
 
 router.post('/group', function (req, res) {
     models.Group.create({
         train_id: req.body.train_id,
     }).then(function (group) {
+        pusher.trigger('groups', 'created', {
+            "message": "group created"
+        });
         return res.send(group);
     });
 });
@@ -54,7 +66,6 @@ router.get('/group/:id', function (req, res) {
             res.statusCode = 404;
             return res.send({error: 'Not found'});
         }
-
         return res.send(group);
     });
 });
@@ -69,6 +80,9 @@ router.put('/group/:id', function (req, res) {
         return group.update({
             train_id: req.body.train_id,
         }).then(function (group) {
+            pusher.trigger('groups', 'updated', {
+                "message": "group updated"
+            });
             res.send(group)
         });
     });
@@ -82,6 +96,9 @@ router.delete('/group/:id', function (req, res) {
         }
 
         return group.destroy().then(function () {
+            pusher.trigger('groups', 'deleted', {
+                "message": "group deleted"
+            });
             return res.send({status: 'REMOVED'});
         });
     });

@@ -6,15 +6,10 @@ const models = require('../models');
 const express = require('express');
 const router = express.Router();
 const log = require('../log')(module);
+const pusherConfig = require('../config/pusher');
 const Pusher = require('pusher');
 
-const pusher = new Pusher({
-    appId: '581177',
-    key: '0f2d6daa9a3769af1220',
-    secret: 'e02779df7567982bb1a8',
-    cluster: 'eu',
-    encrypted: true
-});
+const pusher = new Pusher(pusherConfig);
 
 router.post('/group', function (req, res) {
     models.Group.create({

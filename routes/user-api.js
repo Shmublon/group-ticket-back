@@ -5,6 +5,10 @@ const models = require('../models');
 const express = require('express');
 const router = express.Router();
 const log = require('../log')(module);
+const pusherConfig = require('../config/pusher');
+const Pusher = require('pusher');
+
+const pusher = new Pusher(pusherConfig);
 
 router.post('/user', function (req, res) {
     models.User.findOne({
@@ -72,6 +76,9 @@ router.put('/user/:id', function (req, res) {
             email: req.body.email,
             name: req.body.name
         }).then(function (user) {
+            pusher.trigger('users', 'updated', {
+                "message": "user updated"
+            });
             res.send(user)
         });
     });
